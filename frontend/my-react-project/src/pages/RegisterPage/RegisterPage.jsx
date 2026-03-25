@@ -7,104 +7,165 @@ import { Link } from "react-router-dom";
 
 function RegisterPage() {
 
-  const [form, setForm] = useState({
-    username: "",
-    password: "",
-    email: "",
-    phone: ""
-  });
-
-  const navigate = useNavigate();
-
-  const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value
+    const [form, setForm] = useState({
+        username: "",
+        email: "",
+        phone: "",
+        password: "",
+        confirmPassword: ""
     });
-  };
 
-  const handleRegister = async (e) => {
-    e.preventDefault();
+    const [errors, setErrors] = useState({});
+    const navigate = useNavigate();
 
-    try {
-      await axios.post("http://localhost:8080/api/auth/register", form);
+    const handleChange = (e) => {
+        setForm({
+            ...form,
+            [e.target.name]: e.target.value
+        });
+    };
 
-      alert("Register success!");
-      navigate("/login");
+    const validate = () => {
+        let newErrors = {};
 
-    } catch (error) {
-      alert("Register failed!");
-    }
-  };
+        if (!form.username) {
+            newErrors.username = "Username is required";
+        }
 
-  return (
-    <div className="register-page">
+        if (!form.email) {
+            newErrors.email = "Email is required";
+        } else if (!/\S+@\S+\.\S+/.test(form.email)) {
+            newErrors.email = "Invalid email format";
+        }
 
-      <Card className="register-card">
-        <Card.Body>
+        if (!form.password) {
+            newErrors.password = "Password is required";
+        } else if (form.password.length < 6) {
+            newErrors.password = "Password must be at least 6 characters";
+        }
 
-          <h3 className="text-center mb-4">Register</h3>
+        if (!form.confirmPassword) {
+            newErrors.confirmPassword = "Confirm password is required";
+        } else if (form.password !== form.confirmPassword) {
+            newErrors.confirmPassword = "Passwords do not match";
+        }
 
-          <Form onSubmit={handleRegister}>
+        return newErrors;
+    };
 
-            <Form.Group className="mb-3">
-              <Form.Label>Username</Form.Label>
-              <Form.Control
-                type="text"
-                name="username"
-                placeholder="Enter username"
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
+    const handleRegister = async (e) => {
+        e.preventDefault();
 
-            <Form.Group className="mb-3">
-              <Form.Label>Email</Form.Label>
-              <Form.Control
-                type="email"
-                name="email"
-                placeholder="Enter email"
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
+        const validationErrors = validate();
 
-            <Form.Group className="mb-3">
-              <Form.Label>Phone</Form.Label>
-              <Form.Control
-                type="text"
-                name="phone"
-                placeholder="Enter phone"
-                onChange={handleChange}
-              />
-            </Form.Group>
+        if (Object.keys(validationErrors).length > 0) {
+            setErrors(validationErrors);
+            return;
+        }
 
-            <Form.Group className="mb-3">
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                name="password"
-                placeholder="Enter password"
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
+        try {
+            await axios.post("http://localhost:8080/api/auth/register", form);
 
-            <Button type="submit" className="w-100">
-              Register
-            </Button>
+            alert("Register success!");
+            navigate("/login");
 
-          </Form>
+        } catch (error) {
+            alert("Register failed!");
+        }
+    };
 
-          <div className="text-center mt-3">
-            Already have an account? <Link to="/login">Login</Link>
-          </div>
+    return (
+        <div className="register-page">
 
-        </Card.Body>
-      </Card>
+            <Card className="register-card">
+                <Card.Body>
 
-    </div>
-  );
+                    <h3 className="text-center mb-4">Register</h3>
+
+                    <Form onSubmit={handleRegister}>
+
+                        <Form.Group className="mb-3">
+                            <Form.Label>Username</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="username"
+                                placeholder="Enter username"
+                                onChange={handleChange}
+                                isInvalid={!!errors.username}
+
+                            />
+                            <Form.Control.Feedback type="invalid">
+                                {errors.username}
+                            </Form.Control.Feedback>
+                        </Form.Group>
+
+                        <Form.Group className="mb-3">
+                            <Form.Label>Email</Form.Label>
+                            <Form.Control
+                                type="email"
+                                name="email"
+                                placeholder="Enter email"
+                                onChange={handleChange}
+                                isInvalid={!!errors.email}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                                {errors.email}
+                            </Form.Control.Feedback>
+                        </Form.Group>
+
+                        <Form.Group className="mb-3">
+                            <Form.Label>Phone</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="phone"
+                                placeholder="Enter phone"
+                                onChange={handleChange}
+                            />
+                        </Form.Group>
+
+                        <Form.Group className="mb-3">
+                            <Form.Label>Password</Form.Label>
+                            <Form.Control
+                                type="password"
+                                name="password"
+                                placeholder="Enter password"
+                                onChange={handleChange}
+                                isInvalid={!!errors.password}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                                {errors.password}
+                            </Form.Control.Feedback>
+                        </Form.Group>
+
+                        <Form.Group className="mb-3">
+                            <Form.Label>Confirm Password</Form.Label>
+                            <Form.Control
+                                type="password"
+                                name="confirmPassword"
+                                placeholder="Confirm password"
+                                onChange={handleChange}
+                                isInvalid={!!errors.confirmPassword}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                                {errors.confirmPassword}
+                            </Form.Control.Feedback>
+                        </Form.Group>
+
+                        <Button type="submit" className="w-100">
+                            Register
+                        </Button>
+
+                    </Form>
+
+                    <div className="text-center mt-3">
+                        Already have an account? <Link to="/login">Login</Link>
+                    </div>
+
+                </Card.Body>
+            </Card>
+
+        </div>
+    );
 }
 
 export default RegisterPage;
