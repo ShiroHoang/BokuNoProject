@@ -3,6 +3,7 @@ import { Form, Button, Card } from "react-bootstrap";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./LoginPage.css";
+import { Link } from "react-router-dom";
 
 function LoginPage() {
 
@@ -65,6 +66,10 @@ function LoginPage() {
             <Button type="submit" className="w-100">
               Login
             </Button>
+
+            <div className="text-center">
+              Don't have an account? <Link to="/register">Register now</Link>
+            </div>
 
           </Form>
 

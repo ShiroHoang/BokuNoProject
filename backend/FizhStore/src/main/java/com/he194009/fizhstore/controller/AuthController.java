@@ -2,6 +2,7 @@ package com.he194009.fizhstore.controller;
 
 import com.he194009.fizhstore.dto.LoginRequest;
 import com.he194009.fizhstore.dto.LoginResponse;
+import com.he194009.fizhstore.dto.RegisterRequest;
 import com.he194009.fizhstore.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,5 +18,11 @@ public class AuthController {
     @PostMapping("/login")
     public LoginResponse login(@RequestBody LoginRequest request) {
         return authService.login(request);
+    }
+
+    @PostMapping("/register")
+    public String register(@RequestBody RegisterRequest request) {
+        authService.register(request);
+        return "Register success";
     }
 }
