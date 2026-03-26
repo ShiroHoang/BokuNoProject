@@ -49,7 +49,7 @@ function AppNavbar() {
           <Nav className="ms-auto d-flex align-items-center gap-3">
 
             {/* CART */}
-            <Link to="/cart" className="position-relative">
+            <Link as={Link} to="/cart" className="position-relative">
               <FaShoppingCart size={22} />
               <Badge
                 bg="danger"

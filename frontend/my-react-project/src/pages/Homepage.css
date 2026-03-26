@@ -1,0 +1,18 @@
+/* Target the images inside the carousel */
+.carousel-img {
+  width: 100%;       /* Fills the width of the container */
+  height: 500px;     /* Set your desired fixed height */
+  object-fit: cover; /* This is the "magic" property: it crops instead of stretching */
+  object-position: center; /* Keeps the middle of the photo visible */
+}
+
+.product-img {
+  height: 200px;
+  width: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.card:hover .product-img {
+  transform: scale(1.05);
+}

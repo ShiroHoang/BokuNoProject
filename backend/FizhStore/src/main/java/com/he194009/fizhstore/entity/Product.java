@@ -1,5 +1,6 @@
 package com.he194009.fizhstore.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,7 +22,7 @@ public class Product {
     @Column(length = 2000)
     private String description;
 
-    private BigDecimal price;
+    private double price;
 
     private int stock;
 
@@ -29,5 +30,6 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "category_id")
+    @JsonManagedReference
     private Category category;
 }

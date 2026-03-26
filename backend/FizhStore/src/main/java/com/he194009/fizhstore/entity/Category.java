@@ -1,4 +1,6 @@
 package com.he194009.fizhstore.entity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,5 +22,6 @@ public class Category {
     private String description;
 
     @OneToMany(mappedBy = "category")
+    @JsonBackReference
     private List<Product> products;
 }

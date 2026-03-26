@@ -1,5 +1,6 @@
 package com.he194009.fizhstore.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,7 +21,7 @@ public class Order {
 
     private LocalDateTime orderDate;
 
-    private BigDecimal totalPrice;
+    private double totalPrice;
 
     private String status;
 
@@ -29,5 +30,6 @@ public class Order {
     private User user;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<OrderItem> items;
 }
