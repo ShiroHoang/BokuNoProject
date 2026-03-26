@@ -28,4 +28,35 @@ public class ProductService {
         return repo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
     }
+
+    public List<Product> getProducts(Long categoryId, String keyword, String sort) {
+
+        List<Product> products = repo.findAll();
+
+        if (categoryId != null) {
+            products = products.stream()
+                    .filter(p -> p.getCategory().getId().equals(categoryId))
+                    .toList();
+        }
+
+        if (keyword != null && !keyword.isEmpty()) {
+            products = products.stream()
+                    .filter(p -> p.getName().toLowerCase().contains(keyword.toLowerCase()))
+                    .toList();
+        }
+
+        if (sort != null) {
+            switch (sort) {
+                case "priceAsc":
+                    products.sort((a, b) -> Double.compare(a.getPrice(), b.getPrice()));
+                    break;
+                case "priceDesc":
+                    products.sort((a, b) -> Double.compare(b.getPrice(), a.getPrice()));
+                    break;
+            }
+        }
+        return products;
+    }
+
+
 }

@@ -18,6 +18,7 @@ function AppNavbar() {
 
   const [cartCount, setCartCount] = React.useState(0);
   const navigate = useNavigate();
+  const [keyword, setKeyword] = React.useState("");
   const user = JSON.parse(localStorage.getItem("user"));
 
   const handleLogout = () => {
@@ -29,6 +30,14 @@ function AppNavbar() {
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
     const total = cart.reduce((sum, item) => sum + item.quantity, 0);
     setCartCount(total);
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault(); // 🔥 bắt buộc
+
+    console.log("Searching:", keyword); // debug
+
+    navigate(`/products?keyword=${keyword}`);
   };
 
   React.useEffect(() => {
@@ -50,18 +59,28 @@ function AppNavbar() {
           🛒 MyShop
         </Navbar.Brand>
 
+        <Nav className="me-3">
+          <Nav.Link as={Link} to="/products">
+            Products
+          </Nav.Link>
+        </Nav>
+
         <Navbar.Toggle />
 
         <Navbar.Collapse>
 
           {/* SEARCH */}
-          <Form className="d-flex mx-auto w-50">
+          <Form className="d-flex mx-auto w-50" onSubmit={handleSearch}>
             <FormControl
               type="search"
               placeholder="Search for products..."
               className="me-2"
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
             />
-            <Button variant="primary">Search</Button>
+            <Button variant="primary" type="submit">
+              Search
+            </Button>
           </Form>
 
           {/* RIGHT SIDE */}

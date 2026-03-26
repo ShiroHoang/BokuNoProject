@@ -17,11 +17,6 @@ public class ProductController {
         this.service = service;
     }
 
-    @GetMapping
-    public List<Product> getAll() {
-        return service.getAllProducts();
-    }
-
     @GetMapping("/top10")
     public List<Product> getTop10() {
         return service.getTop10Products();
@@ -30,5 +25,14 @@ public class ProductController {
     @GetMapping("/{id}")
     public Product getById(@PathVariable Long id) {
         return service.getProductById(id);
+    }
+
+    @GetMapping
+    public List<Product> getProducts(
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String sort
+    ) {
+        return service.getProducts(categoryId, keyword, sort);
     }
 }

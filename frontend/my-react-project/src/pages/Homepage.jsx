@@ -62,7 +62,7 @@ function HomePage() {
         <Row>
           {products.map((p) => (
             <Col md={3} sm={6} xs={12} className="mb-4" key={p.id}>
-              <Card className="h-100 shadow-sm">
+              <Card className="h-100 shadow-sm homepage">
                 <Card.Img variant="top" src={p.imageUrl} className="product-img" />
 
                 <Card.Body>

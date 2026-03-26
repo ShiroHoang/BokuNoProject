@@ -22,14 +22,14 @@ function ProductDetail() {
     <>
       <AppNavbar />
 
-      <Container className="mt-4">
+      <Container className="mt-4 product-detail">
         <Row>
           {/* IMAGE */}
           <Col md={6}>
             <Card>
               <Card.Img
                 src={product.imageUrl}
-                className="product-img"
+                className="product-img "
               />
             </Card>
           </Col>
