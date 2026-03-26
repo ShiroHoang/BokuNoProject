@@ -20,10 +20,29 @@ function AppNavbar() {
   const navigate = useNavigate();
   const [keyword, setKeyword] = React.useState("");
   const user = JSON.parse(localStorage.getItem("user"));
+  const isAdmin = user?.role === "ROLE_ADMIN";
 
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      // Gọi API logout ở backend
+      await axios.post(
+        "http://localhost:8080/api/auth/logout", 
+        {}, 
+        { withCredentials: true }
+      );
+      
+      console.log("Logged out from server");
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      // Dù API thành công hay lỗi, ta vẫn xóa localStorage và điều hướng về login
+      localStorage.removeItem("user");
+      localStorage.removeItem("cart"); 
+      
+      navigate("/login");
+      // Load lại trang để xóa trạng thái cũ của ứng dụng nếu cần
+      window.location.reload(); 
+    }
   };
 
   const updateCartCount = () => {
@@ -106,10 +125,34 @@ function AppNavbar() {
                 <NavDropdown.Item>
                   Hello, {user.username}
                 </NavDropdown.Item>
+
                 <NavDropdown.Divider />
+
                 <NavDropdown.Item as={Link} to="/orders">
                   My Orders
                 </NavDropdown.Item>
+
+                {/* 👇 ADMIN ONLY */}
+                {isAdmin && (
+                  <>
+                    <NavDropdown.Divider />
+
+                    <NavDropdown.Item as={Link} to="/admin">
+                      Admin Dashboard
+                    </NavDropdown.Item>
+
+                    <NavDropdown.Item as={Link} to="/admin/products">
+                      Manage Products
+                    </NavDropdown.Item>
+
+                    <NavDropdown.Item as={Link} to="/admin/categories">
+                      Manage Categories
+                    </NavDropdown.Item>
+                  </>
+                )}
+
+                <NavDropdown.Divider />
+
                 <NavDropdown.Item onClick={handleLogout}>
                   Logout
                 </NavDropdown.Item>

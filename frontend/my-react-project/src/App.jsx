@@ -6,6 +6,10 @@ import ProductDetail from "./pages/ProductDetail/ProductDetail";
 import CartPage from "./pages/CartPage/CartPage";
 import OrderHistoryPage from "./pages/OrderHistoryPage/OrderHistoryPage";
 import ProductListPage from "./pages/ProductListPage/ProductListPage";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import ProductAdminPage from "./pages/admin/ProductAdminPage";
+import ProductForm from "./pages/admin/ProductForm";
+import CategoryAdminPage from "./pages/admin/CategoryAdminPage";
 
 function App() {
   return (
@@ -18,6 +22,11 @@ function App() {
         <Route path="/cart" element={<CartPage />} />
         <Route path="/orders" element={<OrderHistoryPage />} />
         <Route path="/products" element={<ProductListPage />} />
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/products" element={<ProductAdminPage />} />
+        <Route path="/admin/products/new" element={<ProductForm />} />
+        <Route path="/admin/products/edit/:id" element={<ProductForm />} />
+        <Route path="/admin/categories" element={<CategoryAdminPage />} />
       </Routes>
     </BrowserRouter>
   );

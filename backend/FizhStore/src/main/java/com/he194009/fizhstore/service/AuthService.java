@@ -8,7 +8,15 @@ import com.he194009.fizhstore.entity.Role;
 import com.he194009.fizhstore.entity.User;
 import com.he194009.fizhstore.repository.RoleRepository;
 import com.he194009.fizhstore.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -21,6 +29,12 @@ public class AuthService {
     @Autowired
     private RoleRepository roleRepository;
 
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    private final SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
+
+
     private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     //register
@@ -32,7 +46,7 @@ public class AuthService {
         }
 
         // 2. lấy role USER
-        Role role = roleRepository.findByName("USER")
+        Role role = roleRepository.findByName("ROLE_USER")
                 .orElseThrow(() -> new RuntimeException("Role not found"));
 
         // 3. tạo user
@@ -48,19 +62,19 @@ public class AuthService {
     }
 
     //login
-    public LoginResponse login(LoginRequest request) {
-
-        User user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        if (!encoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid password");
-        }
-
-        return new LoginResponse(
-                user.getId(),
-                user.getUsername(),
-                user.getRole().getName()
+    public LoginResponse login(LoginRequest request, HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
+        // 1. Xác thực
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
+
+        // 2. Thiết lập Authentication vào Context
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        // 3. QUAN TRỌNG: Lưu Context này vào Session để Server gửi Set-Cookie về
+        securityContextRepository.saveContext(SecurityContextHolder.getContext(), servletRequest, servletResponse);
+
+        User user = userRepository.findByUsername(request.getUsername()).get();
+        return new LoginResponse(user.getId(), user.getUsername(), user.getRole().getName());
     }
 }

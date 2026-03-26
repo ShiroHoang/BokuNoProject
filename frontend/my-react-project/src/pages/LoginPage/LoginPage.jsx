@@ -17,10 +17,8 @@ function LoginPage() {
     try {
       const response = await axios.post(
         "http://localhost:8080/api/auth/login",
-        {
-          username,
-          password
-        }
+        { username, password },
+        { withCredentials: true }
       );
 
       localStorage.setItem("user", JSON.stringify(response.data));
