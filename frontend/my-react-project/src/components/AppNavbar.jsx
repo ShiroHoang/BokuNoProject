@@ -12,8 +12,11 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { FaUser, FaShoppingCart } from "react-icons/fa";
 
+
+
 function AppNavbar() {
 
+  const [cartCount, setCartCount] = React.useState(0);
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -21,6 +24,22 @@ function AppNavbar() {
     localStorage.removeItem("user");
     navigate("/login");
   };
+
+  const updateCartCount = () => {
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const total = cart.reduce((sum, item) => sum + item.quantity, 0);
+    setCartCount(total);
+  };
+
+  React.useEffect(() => {
+    updateCartCount(); // load lần đầu
+
+    window.addEventListener("cartUpdated", updateCartCount);
+
+    return () => {
+      window.removeEventListener("cartUpdated", updateCartCount);
+    };
+  }, []);
 
   return (
     <Navbar bg="white" expand="lg" className="shadow-sm sticky-top">
@@ -55,7 +74,7 @@ function AppNavbar() {
                 bg="danger"
                 className="position-absolute top-0 start-100 translate-middle"
               >
-                2
+                {cartCount}
               </Badge>
             </Link>
 

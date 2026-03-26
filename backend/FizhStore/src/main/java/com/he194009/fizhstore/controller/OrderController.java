@@ -25,4 +25,9 @@ public class OrderController {
                 request.getItems()
         );
     }
+
+    @GetMapping("/user/{userId}")
+    public List<Order> getUserOrders(@PathVariable Long userId) {
+        return orderService.getOrdersByUser(userId);
+    }
 }

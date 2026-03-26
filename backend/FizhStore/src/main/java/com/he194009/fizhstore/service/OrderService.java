@@ -69,4 +69,8 @@ public class OrderService {
 
         return orderRepo.save(order);
     }
+
+    public List<Order> getOrdersByUser(Long userId) {
+        return orderRepo.findByUserIdOrderByOrderDateDesc(userId);
+    }
 }

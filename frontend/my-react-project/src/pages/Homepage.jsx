@@ -68,29 +68,33 @@ function HomePage() {
                 <Card.Body>
                   <Card.Title>{p.name}</Card.Title>
                   <Card.Text>${p.price}</Card.Text>
+                  <div className="d-flex gap-2 mt-2">
+                    <Button
+                      variant="success"
+                      size="sm"
+                      onClick={() => {
+                        addToCart(p);
+                        alert("✅ Added to cart!");
+                      }}
+                    >
+                      Add to Cart
+                    </Button>
 
-                  <Button
-                    variant="success"
-                    size="sm"
-                    onClick={() => addToCart(p)}
-                  >
-                    Add to Cart
-                  </Button>
-
-                  <Button
-                    variant="outline-primary"
-                    size="sm"
-                    onClick={() => navigate(`/product/${p.id}`)}
-                  >
-                    View Detail
-                  </Button>
+                    <Button
+                      variant="outline-primary"
+                      size="sm"
+                      onClick={() => navigate(`/product/${p.id}`)}
+                    >
+                      View Detail
+                    </Button>
+                  </div>
                 </Card.Body>
               </Card>
             </Col>
           ))}
-        </Row>
+        </Row >
 
-      </Container>
+      </Container >
     </>
   );
 }
