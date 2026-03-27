@@ -12,7 +12,7 @@ import axios from "axios";
 function CartPage() {
     const [cart, setCart] = useState([]);
     const navigate = useNavigate();
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
 
     useEffect(() => {
         setCart(getCart());
@@ -25,11 +25,15 @@ function CartPage() {
         refreshCart();
     };
 
-    const handleIncrease = (id) => {
-        const updated = cart.map(item =>
-            item.id === id
-                ? { ...item, quantity: item.quantity + 1 }
-                : item
+    const handleIncrease = (item) => {
+        // 🔥 Kiểm tra giới hạn Stock (Giả sử item có field stock)
+        if (item.stock !== undefined && item.quantity >= item.stock) {
+            return alert(`Sorry, only ${item.stock} units available in stock!`);
+        }
+
+        const currentCart = getCart();
+        const updated = currentCart.map(i =>
+            i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
         );
         localStorage.setItem("cart", JSON.stringify(updated));
         refreshCart();
@@ -54,7 +58,7 @@ function CartPage() {
             }))
         };
 
-        axios.post("http://localhost:8080/api/orders/checkout", payload)
+        axios.post("http://localhost:8080/api/orders/checkout", payload, { withCredentials: true })
             .then(() => {
                 alert("✅ Order placed successfully!");
                 clearCart();
@@ -63,7 +67,8 @@ function CartPage() {
             })
             .catch(err => {
                 console.error(err);
-                alert("❌ Checkout failed");
+                const errorMsg = err.response?.data?.message || "Checkout failed";
+                alert(`❌ ${errorMsg}`);
             });
     };
 
